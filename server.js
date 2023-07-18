@@ -12,7 +12,7 @@ http
       "Access-Control-Max-Age": 2592000, // 30 days
     });
 
-    res.write(`<h1>Hello From API ${url}</h1>`);
+    res.write(`Hello From API ${port}`);
     res.end();
   })
   .listen(port, function () {

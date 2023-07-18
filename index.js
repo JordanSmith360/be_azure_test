@@ -1,14 +1,13 @@
-const http = require("http");
-const port = 3000;
+var express = require("express");
+var cors = require("cors");
+var app = express();
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Hello World");
+app.use(cors());
+
+app.get("/", function (req, res, next) {
+  res.json({ msg: "This is CORS-enabled for all origins!" });
 });
 
-server.listen(port, () => {
-  console.log(`Server running`);
+app.listen(80, function () {
+  console.log("CORS-enabled web server listening on port 80");
 });
-
-console.log(`Node.js web server at port ${port} is running..`);

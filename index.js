@@ -1,15 +1,28 @@
-var express = require("express");
-var cors = require("cors");
-var app = express();
+const http = require("http");
+const port = 80;
 
-app.use(cors());
+http
+  .createServer((req, res) => {
+    const headers = {
+      "Access-Control-Allow-Origin": "*" /* @dev First, read about security */,
+      "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+      "Access-Control-Max-Age": 2592000, // 30 days
+      /** add other headers as per requirement */
+    };
 
-app.get("/", function (req, res, next) {
-  res.json({ msg: "This is CORS-enabled for all origins!" });
-});
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, headers);
+      res.end();
+      return;
+    }
 
-app.listen(80, function () {
-  console.log("CORS-enabled web server listening on port 80");
-});
+    if (["GET", "POST"].indexOf(req.method) > -1) {
+      res.writeHead(200, headers);
+      res.end("Hello World From API");
+      return;
+    }
 
-console.log("Setting up server");
+    res.writeHead(405, headers);
+    res.end(`${req.method} is not allowed for the request.`);
+  })
+  .listen(port);

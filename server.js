@@ -27,15 +27,18 @@
 // import cors from "cors";
 // import multer from 'multer'
 // import dotenv from 'dotenv'
-// dotenv.config();
 // import  config  from './config/config.js'
 
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const dotenv = require("dotenv");
 
 const app = express(); //creating an app
 const PORT = process.env.PORT || 8080; // port to run our server, this will dynamically listen to a port provided by azzure during production
+dotenv.config();
 
 // mongoose connection
 
@@ -48,8 +51,8 @@ mongoose.connect(
 );
 
 // bodyparser setup
-// app.use(bodyParser.urlencoded({limit: '50mb',extended:true}));
-// app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
 
 app.use(cors());
 
@@ -66,23 +69,23 @@ app.use((req, res, next) => {
 // routes(app); //run our routes by passing it to the app
 
 // // Set up multer storage
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//       cb(null, './uploads/'); // Directory to save the uploaded files
-//     },
-//     filename: function (req, file, cb) {
-//       cb(null, file.originalname);
-//     }
-//   });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/"); // Directory to save the uploaded files
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
 
-// const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 // Handle file upload
-// app.post('/upload', upload.single('file'), (req, res) => {
-//   console.log('File received:', req.file);
+app.post("/upload", upload.single("file"), (req, res) => {
+  console.log("File received:", req.file);
 
-//   res.send('File uploaded successfully');
-// });
+  res.send("File uploaded successfully");
+});
 
 // This is our end point when we go to the browser
 app.get(

@@ -20,8 +20,6 @@
 //   });
 
 // Installed multer for receiving a pdf from the front end
-const express = require("express");
-const cors = require("cors");
 // import express from "express";
 // import mongoose from 'mongoose';
 // import bodyParser from 'body-parser';
@@ -32,15 +30,22 @@ const cors = require("cors");
 // dotenv.config();
 // import  config  from './config/config.js'
 
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
 const app = express(); //creating an app
 const PORT = process.env.PORT || 8080; // port to run our server, this will dynamically listen to a port provided by azzure during production
 
 // mongoose connection
 
-// mongoose.Promise = global.Promise;
-// mongoose.connect(config.MONGO_CONNECTION_STRING,{
-//     useNewUrlParser: true
-// });
+mongoose.Promise = global.Promise;
+mongoose.connect(
+  "mongodb://processordb:MMzP5vSRKVNgNq3qN1deqdPfLxsSjBsxi8INvC6TrdYBO5iHCtsXTuzzOi4MGKhlgLZN0AoSUlhuACDbgkxeHQ==@processordb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@processordb@",
+  {
+    useNewUrlParser: true,
+  }
+);
 
 // bodyparser setup
 // app.use(bodyParser.urlencoded({limit: '50mb',extended:true}));
@@ -84,6 +89,24 @@ app.get(
   "/",
   (req, res) => res.send(`Node and express sever is running on port ${PORT}`) // this will be the response
 );
+
+const Schema = mongoose.Schema;
+
+const TestSchema = new Schema({
+  test: {
+    type: String,
+    required: "Enter po number",
+  },
+});
+
+const Test = mongoose.model("TestSchema", TestSchema);
+
+app.get("/write", async (req, res) => {
+  const test = new Test({ test: "Hello World" });
+  const result = await test.save();
+
+  res.send(`We wrote to the comos db: ${test} ${result}`); // this will be the response
+});
 
 // This is to show something on our console
 app.listen(PORT, () => console.log(`Your server is running on port ${PORT}`));
